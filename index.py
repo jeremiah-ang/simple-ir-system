@@ -15,20 +15,23 @@ python index.py -i queries/basic/data -d queries/basic/dictionary.txt -p queries
 python index.py -i /Users/jeremiahang/nltk_data/corpora/reuters/training -d queries/forum/dictionary.txt -p queries/forum/postings.txt
 
 
-python index.py -i data -d dictionary.txt -p postings.txt
+python index.py -i data/test/ -d dictionary.txt -p postings.txt
+python index.py -i data/csv/test.csv -d dictionary.txt -p postings.txt
+python index.py -i data/csv/dataset_cut1.csv -d dictionary.txt -p postings.txt
+python index.py -i data/csv/dataset.csv -d dictionary.txt -p postings.txt
 python index.py -i /Users/jeremiahang/nltk_data/corpora/reuters/training -d dictionary.txt -p postings.txt
 
 '''
 
 def usage():
-    print "usage: " + sys.argv[0] + " -i directory-of-documents -d dictionary-file -p postings-file [-x]"
+    print ("usage: " + sys.argv[0] + " -i directory-of-documents -d dictionary-file -p postings-file [-x]")
 
 input_directory = output_file_dictionary = output_file_postings = None
 phrasal_queries = False
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], 'i:d:p:x')
-except getopt.GetoptError, err:
+except (getopt.GetoptError, err):
     usage()
     sys.exit(2)
     
@@ -48,6 +51,11 @@ if input_directory == None or output_file_postings == None or output_file_dictio
     usage()
     sys.exit(2)
 
-N, dictionary, document_length = inputoutput.read_directory(input_directory)
+required = ['6807771', '4001247', '3992148', '2211154', '2748529', '4273155', '3243674', '2702938']
+N, dictionary, document_length, direct_index = inputoutput.read_cases_csv(input_directory, required)
 pointers = inputoutput.write_postings(output_file_postings, dictionary)
-inputoutput.write_dictionary(output_file_dictionary, dictionary, document_length, pointers, N)
+inputoutput.write_dictionary(output_file_dictionary, dictionary, document_length, direct_index, pointers, N)
+
+# N, dictionary, document_length = inputoutput.read_directory(input_directory)
+# pointers = inputoutput.write_postings(output_file_postings, dictionary)
+# inputoutput.write_dictionary(output_file_dictionary, dictionary, document_length, pointers, N)
